@@ -41,19 +41,11 @@ kubescape scan [target] [flags]
 | `--compliance-threshold <float>` | Fail if compliance score is below threshold. Applies to `scan framework`, `scan control`, and `--view resource\|control` — see [score thresholds](#score-thresholds). | `0` |
 | `--controls-config <path>` | Path to controls configuration file | - |
 | `-e, --exclude-namespaces <ns>` | Namespaces to exclude (comma-separated) | - |
-<<<<<<< HEAD
 | `--encrypt` | Encrypt sensitive report metadata using the master key provided through the `KUBESCAPE_MASTER_KEY` environment variable. Requires `--format json` for reports that will later be decrypted with `kubescape decrypt`. If both `--encrypt` and `--hide` are specified, `--encrypt` takes precedence. | `false` |
 | `--exceptions <path>` | Path to exceptions file | - |
 | `--fail-coverage-below <float>` | Fail if the scan coverage score is below threshold (`0` disables). Applies in every view — see [score thresholds](#score-thresholds). | `0` |
 | `-f, --format <format>` | Output format: `pretty-printer`, `json`, `junit`, `sarif`, `html`, `pdf`, `prometheus` | `pretty-printer` |
 | `--hide` | Replace sensitive report metadata with deterministic pseudonyms. Ignored when `--encrypt` is also specified. | `false` |
-=======
-| `--encrypt` | Encrypt sensitive report metadata using the master key provided through the `KUBESCAPE_MASTER_KEY` environment variable. Encrypted reports can later be restored using `kubescape decrypt`. | `false` |
-| `--exceptions <path>` | Path to exceptions file | - |
-| `--fail-coverage-below <float>` | Fail if the scan coverage score is below threshold (`0` disables). Applies in every view — see [score thresholds](#score-thresholds). | `0` |
-| `-f, --format <format>` | Output format: `pretty-printer`, `json`, `junit`, `sarif`, `html`, `pdf`, `prometheus` | `pretty-printer` |
-| `--hide` | Replace sensitive report metadata with anonymized values in the generated report. | `false` |
->>>>>>> 9704b60e (docs(cli): document report protection workflow)
 | `--include-namespaces <ns>` | Namespaces to include (comma-separated) | - |
 | `--keep-local` | Don't report results to backend | `false` |
 | `--kubeconfig <path>` | Path to kubeconfig file | - |
@@ -91,7 +83,6 @@ kubescape scan --hide
 # Generate an anonymized JSON report
 kubescape scan --hide --format json --output report.json
 
-<<<<<<< HEAD
 # The key is used as raw bytes and must be exactly 32 characters long.
 # Note: `openssl rand -base64 32` (44 chars) and `openssl rand -hex 32` (64 chars)
 # are NOT valid — they exceed 32 bytes once passed through as raw text.
@@ -106,14 +97,6 @@ kubescape scan --encrypt --format json --output encrypted-report.json
 export KUBESCAPE_MASTER_KEY=$(LC_ALL=C tr -dc 'A-Za-z0-9' </dev/urandom | head -c 32)
 
 # Decrypt an encrypted report
-=======
-# Generate an encrypted JSON report
-export KUBESCAPE_MASTER_KEY=<32-byte-master-key>
-kubescape scan --encrypt --format json --output encrypted-report.json
-
-# Decrypt an encrypted report
-export KUBESCAPE_MASTER_KEY=<32-byte-master-key>
->>>>>>> 9704b60e (docs(cli): document report protection workflow)
 kubescape decrypt encrypted-report.json > decrypted-report.json
 
 # Output to JSON file
@@ -358,11 +341,7 @@ sudo kubescape patch --image myregistry.example.com/team/app:1.2.3 --push
 
 ---
 
-<<<<<<< HEAD
 ## Hiding sensitive metadata
-=======
-## kubescape scan --hide
->>>>>>> 9704b60e (docs(cli): document report protection workflow)
 
 Generate a report with anonymized sensitive report metadata.
 
@@ -374,7 +353,6 @@ kubescape scan [target] --hide [flags]
 
 ### Description
 
-<<<<<<< HEAD
 Replaces sensitive report metadata with deterministic pseudonyms.
 
 This reduces incidental exposure but is not a confidentiality guarantee.
@@ -382,11 +360,6 @@ Values drawn from small or predictable sets (such as common namespace names)
 may be recovered by comparing candidate hashes.
 
 Use `--encrypt` when sensitive metadata requires confidentiality.
-=======
-Anonymizes sensitive report metadata by replacing values with deterministic
-pseudonyms. This helps safely share scan results without exposing sensitive
-resource information.
->>>>>>> 9704b60e (docs(cli): document report protection workflow)
 
 ### Examples
 
@@ -400,7 +373,6 @@ kubescape scan /path/to/manifests \
   --format json \
   --output report.json
 ```
-<<<<<<< HEAD
 > `--hide` replaces sensitive values with deterministic pseudonyms derived from an
 > unsalted hash of the original value. Values drawn from a small or guessable set —
 > such as common namespace names — can be recovered by hashing candidate values and
@@ -412,14 +384,6 @@ kubescape scan /path/to/manifests \
 ---
 
 ## Encrypting sensitive metadata
-=======
-
-> `--hide` anonymizes sensitive report metadata. The original values cannot be restored.
-
----
-
-## kubescape scan --encrypt
->>>>>>> 9704b60e (docs(cli): document report protection workflow)
 
 Generate a report with encrypted sensitive report metadata.
 
@@ -432,7 +396,6 @@ kubescape scan [target] --encrypt [flags]
 ### Description
 
 Encrypts sensitive report metadata using the master key supplied through the
-<<<<<<< HEAD
 `KUBESCAPE_MASTER_KEY` environment variable.
 
 The master key is used as raw bytes and must be exactly 32 characters long.
@@ -441,23 +404,14 @@ Use `--format json` to produce a report that can later be decrypted with
 `kubescape decrypt`.
 
 If both `--encrypt` and `--hide` are specified, `--encrypt` takes precedence.
-=======
-`KUBESCAPE_MASTER_KEY` environment variable. Encrypted reports can later be
-restored using `kubescape decrypt`.
->>>>>>> 9704b60e (docs(cli): document report protection workflow)
 
 ### Examples
 
 ```bash
-<<<<<<< HEAD
 # The key is used as raw bytes and must be exactly 32 characters long.
 # Note: `openssl rand -base64 32` (44 chars) and `openssl rand -hex 32` (64 chars)
 # are NOT valid — they exceed 32 bytes once passed through as raw text.
 export KUBESCAPE_MASTER_KEY=$(LC_ALL=C tr -dc 'A-Za-z0-9' </dev/urandom | head -c 32)
-=======
-# Export a 32-byte master key
-export KUBESCAPE_MASTER_KEY=<32-byte-master-key>
->>>>>>> 9704b60e (docs(cli): document report protection workflow)
 
 # Scan the current cluster and generate an encrypted report
 kubescape scan \
@@ -471,14 +425,9 @@ kubescape scan /path/to/manifests \
   --format json \
   --output encrypted-report.json
 ```
-<<<<<<< HEAD
 > `--encrypt` requires the `KUBESCAPE_MASTER_KEY` environment variable.
 > The key must be exactly 32 characters long and the same key must be supplied
 > later when running `kubescape decrypt`.
-=======
-
-> `--encrypt` requires the `KUBESCAPE_MASTER_KEY` environment variable. The same master key must be supplied when decrypting the report.
->>>>>>> 9704b60e (docs(cli): document report protection workflow)
 
 ---
 
@@ -494,17 +443,11 @@ kubescape decrypt <report-file>
 
 ### Description
 
-<<<<<<< HEAD
 Decrypts report metadata that was protected with
 `kubescape scan --encrypt`.
 
 Only metadata encrypted by `kubescape scan --encrypt` is restored.
 Metadata pseudonymized with `--hide` cannot be recovered by `kubescape decrypt`.
-=======
-Decrypts an encrypted Kubescape report using the
-`KUBESCAPE_MASTER_KEY` environment variable. The decrypted report is written to
-standard output and can be redirected to a file.
->>>>>>> 9704b60e (docs(cli): document report protection workflow)
 
 ### Flags
 
@@ -515,15 +458,10 @@ standard output and can be redirected to a file.
 ### Examples
 
 ```bash
-<<<<<<< HEAD
 # The key is used as raw bytes and must be exactly 32 characters long.
 # Note: `openssl rand -base64 32` (44 chars) and `openssl rand -hex 32` (64 chars)
 # are NOT valid — they exceed 32 bytes once passed through as raw text.
 export KUBESCAPE_MASTER_KEY=$(LC_ALL=C tr -dc 'A-Za-z0-9' </dev/urandom | head -c 32)
-=======
-# Export the master key used during encryption
-export KUBESCAPE_MASTER_KEY=<32-byte-master-key>
->>>>>>> 9704b60e (docs(cli): document report protection workflow)
 
 # Decrypt an encrypted report
 kubescape decrypt encrypted-report.json
@@ -532,13 +470,9 @@ kubescape decrypt encrypted-report.json
 kubescape decrypt encrypted-report.json > decrypted-report.json
 ```
 
-<<<<<<< HEAD
 > `kubescape decrypt` restores metadata encrypted by
 > `kubescape scan --encrypt`. It does not reverse
 > deterministic pseudonymization produced by `--hide`.
-=======
-> `kubescape decrypt` restores sensitive report metadata encrypted with `kubescape scan --encrypt`. The same `KUBESCAPE_MASTER_KEY` used during encryption must be provided for successful decryption.
->>>>>>> 9704b60e (docs(cli): document report protection workflow)
 
 ---
 ## kubescape list
